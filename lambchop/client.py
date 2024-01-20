@@ -1,7 +1,7 @@
+from typing import Any
+
 import anyio
 import dill
-
-from typing import Any
 
 from .datastructures import Task
 

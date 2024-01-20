@@ -1,5 +1,5 @@
 import inspect
-from typing import Optional, Sequence, Callable
+from typing import Callable, Optional, Sequence
 
 from .client import Client
 from .datastructures import Task

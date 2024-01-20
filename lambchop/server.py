@@ -1,11 +1,12 @@
-import sys
-import importlib
-import dill
-import inspect
-import anyio
 import functools
-from anyio.abc import SocketAttribute
+import importlib
+import inspect
+import sys
 from pathlib import Path
+
+import anyio
+import dill
+from anyio.abc import SocketAttribute
 
 from lambchop.datastructures import Task
 
@@ -19,7 +20,7 @@ class Server:
 
     def get_fun(self, task: Task) -> None:
         f = Path(task.file)
-        sys.path.append( str(f.parent) )
+        sys.path.append(str(f.parent))
         module = importlib.import_module(f.stem)
         return getattr(module, task.func)
 

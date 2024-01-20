@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools @ git+https://github.com/pypa/setuptools.git@main"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "lambchop"
 description = "My package description"
-version = "0.0.1"
+version = "0.0.5"
 authors = [{name = "bohemdev"}]
 readme = "README.md"
 license = {file = "LICENSE"}

