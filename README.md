@@ -8,20 +8,19 @@
   <h3 align="center">lambchop</h3>
 
   <p align="center">
-    A sidekick for your AWS Lambda 🐑
+    A sidekick for your AWS Lambda
   <br/>
 
    ![](https://img.shields.io/badge/language-python-blue)
    ![version](https://img.shields.io/badge/version-1.2.3-green)
-   ![](https://img.shields.io/badge/license-mit-red)
+   ![](https://img.shields.io/badge/license-MIT-red)
    
-
   </p>
 </div>
 
 ## Overview
 
-`lambchop` is an Python package to make AWS Lambda functions asyncronous.
+`lambchop` is an Python package to make regular AWS Lambda functions asyncronous by allowing them to run background processes. 
 
 
 ## Installation
