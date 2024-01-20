@@ -22,3 +22,35 @@
 ## Overview
 
 `lambchop` is an Python package to make AWS Lambda functions asyncronous.
+
+
+## Installation
+pypi:
+
+```
+pip install lambchop
+```
+
+github:
+
+```
+pip install git+ssh://git@github.com/dave-lanigan/lambchop.git
+```
+```
+pip install git+https://git@github.com/dave-lanigan/lambchop.git
+```
+
+## Usage
+
+```
+import time
+from lambchop import SideKick
+
+def long_running_process(x, y):
+    print("Starting process.")
+    time.sleep(x + y)
+    print("Completed.")
+
+sk = SideKick()
+sk.process(long_running_process, x=5, y=3)
+```
