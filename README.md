@@ -8,7 +8,7 @@
   <h3 align="center">lambchop</h3>
 
   <p align="center">
-    🐑 A sidekick for your AWS Lambda 🐑
+    A sidekick for your AWS Lambda 🐑
   <br/>
 
    ![](https://img.shields.io/badge/language-python-blue)
