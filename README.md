@@ -42,6 +42,7 @@ pip install git+https://git@github.com/dave-lanigan/lambchop.git
 ## Usage
 
 ```
+import anyio
 import time
 from lambchop import SideKick
 
@@ -50,6 +51,12 @@ def long_running_process(x, y):
     time.sleep(x + y)
     print("Completed.")
 
-sk = SideKick()
-sk.process(long_running_process, x=5, y=3)
+
+async def main():
+    sk = SideKick()
+    await sk.process(long_running_process, x=5, y=3)
+    print("Done sending.")
+
+if __name__ == "__main__":
+    anyio.run(main)
 ```

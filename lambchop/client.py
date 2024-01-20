@@ -28,4 +28,3 @@ class Client:
         bt = self.serialize(task)
         async with await anyio.connect_tcp("localhost", self.port) as client:
             await client.send(bt)
-            return await client.receive()

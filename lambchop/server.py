@@ -19,7 +19,7 @@ class Server:
 
     def get_fun(self, task: Task) -> None:
         f = Path(task.file)
-        sys.path.append(f.parent)
+        sys.path.append( str(f.parent) )
         module = importlib.import_module(f.stem)
         return getattr(module, task.func)
 
