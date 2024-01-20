@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="![cute_03](https://github.com/dave-lanigan/lambchop/assets/29602997/9c0826c8-b6b0-4ad7-84f4-85ff4b1e7c74)" alt="Logo" width="250" height="250">
+    <img src="https://github.com/dave-lanigan/lambchop/assets/29602997/9c0826c8-b6b0-4ad7-84f4-85ff4b1e7c74" alt="Logo" width="250" height="250">
 
   <h3 align="center">lambchop</h3>
 
