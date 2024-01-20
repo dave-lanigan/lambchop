@@ -11,10 +11,9 @@
     🐑 A sidekick for your AWS Lambda 🐑
   <br/>
 
-   ![Written in Python][language-shield]
-   [![MIT License][license-shield]][license-url]
-   [![Contributors Welcome][contributors-shield]][contributors-url]
-   
+   ![](https://img.shields.io/badge/language-python-blue)
+   ![version](https://img.shields.io/badge/version-1.2.3-green)
+   ![](https://img.shields.io/badge/license-mit-red)
    
 
   </p>
