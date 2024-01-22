@@ -1,0 +1,62 @@
+name: Release 🚀
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: 'write'
+  id-token: 'write'
+  deployments: 'write'
+  pull-requests: 'write'
+
+jobs:
+    clean-test:
+        name: Clean & Test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+
+            - name: Clean
+              run: make clean
+            
+            - name: Test
+              run: make test
+    
+        
+    build-release:
+        name: Build, Publish & Release
+        needs: clean-test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
+            
+            - name: Get prject version
+              run: |
+                VERSION=$(grep -E '^version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+"' pyproject.toml | cut -d '"' -f 2)
+                echo "CTAG=$VERSION" >> $GITHUB_ENV
+            
+            - name: Get latest release tag
+              id: ptag
+              uses: "WyriHaximus/github-action-get-previous-tag@v1"
+              with:
+                fallback: 0.0.1
+            
+            - name: Build & Publish
+              if: ${{ env.CTAG != env.PTAG }}
+              run: make build-publish
+            
+            - name: Create release
+              if: ${{ env.CTAG != steps.ptag.outputs.tag }}
+              uses: ncipollo/release-action@v1
+              with:
+                skipIfReleaseExists: true
+                tag: "v${{ env.CTAG }}"
+                artifacts: "./dist/*"
+                token: ${{ github.token }}
