@@ -65,7 +65,9 @@ jobs:
             
             - name: Build & Publish
               if: ${{ env.CTAG != env.PTAG }}
-              run: make build-publish
+              run: |
+                make build
+                twine upload dist/* -u __token__ -p ${{ vars.PYPI }} --verbose
             
             - name: Create release
               if: ${{ env.CTAG != steps.ptag.outputs.tag }}
