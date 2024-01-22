@@ -19,6 +19,7 @@ jobs:
               uses: actions/checkout@v2
               with:
                 fetch-depth: 0
+            
             - uses: actions/setup-python@v4
               with:
                 python-version: 3.11
@@ -54,6 +55,13 @@ jobs:
               uses: "WyriHaximus/github-action-get-previous-tag@v1"
               with:
                 fallback: 0.0.1
+
+            - uses: actions/setup-python@v4
+              with:
+                python-version: 3.11
+
+            - name: Install Deps
+              run: pip install twine
             
             - name: Build & Publish
               if: ${{ env.CTAG != env.PTAG }}
