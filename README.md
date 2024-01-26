@@ -60,3 +60,14 @@ async def main():
 if __name__ == "__main__":
     anyio.run(main)
 ```
+
+
+
+### Inspirations
+
+- https://github.com/aws-samples/aws-lambda-extensions/blob/main/python-example-logs-api-extension/extensions/logs_api_http_extension/http_listener.py
+- https://www.wyllie.net/data-blog/using-aws-lambda-extensions-with-python
+- lambda_punch
+- starlette background tasks
+- dramatiq
+- celery

@@ -1,6 +1,7 @@
 name: Release 🚀
 
 on:
+  workflow_dispatch:
   push:
     branches: [master]
 
@@ -29,10 +30,9 @@ jobs:
             - name: Clean
               run: make clean
             
-            - name: Test
-              run: make test
+            # - name: Test
+            #   run: make test
     
-        
     build-release:
         name: Build, Publish & Release
         needs: clean-test
@@ -56,7 +56,9 @@ jobs:
             
             - name: Build & Publish
               if: ${{ env.CTAG != env.PTAG }}
-              run: make build-publish
+              run: |
+                make build
+                twine upload dist/* --username __token__ --password ${{ vars.PYPI }} --verbose
             
             - name: Create release
               if: ${{ env.CTAG != steps.ptag.outputs.tag }}

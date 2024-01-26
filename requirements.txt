@@ -1,3 +1,4 @@
+requests
 anyio
 dill
 typer

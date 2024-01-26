@@ -8,13 +8,16 @@ import anyio
 import dill
 from anyio.abc import SocketAttribute
 
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 from lambchop.datastructures import Task
 
 
 class Server:
     def __init__(self, port: int = 1956) -> None:
         self.port = port
-
+        self.jobs = 0
+    
     def deserialize(self, task: Task) -> None:
         return dill.loads(task)
 
@@ -37,20 +40,28 @@ class Server:
             if kwargs:  # pragma: no cover
                 # run_sync doesn't accept 'kwargs', so bind them in here
                 func = functools.partial(func, **kwargs)
-            return await anyio.to_thread.run_sync(func, *args)
+            await anyio.to_thread.run_sync(func, *args)
+        return b"COMPLETED"
 
     async def handle(self, client):
         async with client:
-            print(
-                "receiving message from", client.extra(SocketAttribute.remote_address)
-            )
+            addr = client.extra(SocketAttribute.remote_address)
+            print(f"receiving message from: {addr}")
             msg = await client.receive()
+            
             if msg == b"PING":
                 await client.send(b"PONG")
                 return
+
+            if
+            
             try:
-                await self.execute(msg)
-                await client.send(b"COMPLETED")
+                self.jobs += 1
+                print("Number of jobs: ", self.jobs)
+                msg = await self.execute(msg)
+                self.jobs -= 1
+                
+                await client.send(msg)
             except Exception as e:
                 print(e)
                 await client.send(b"ERROR")
