@@ -8,7 +8,7 @@
   <h3 align="center">lambchop</h3>
 
   <p align="center">
-    A sidekick for your AWS Lambda
+    A sidekick that makes your AWS Lambda async
   <br/>
 
    ![](https://img.shields.io/badge/language-python-blue)
@@ -20,7 +20,7 @@
 
 ## Overview
 
-`lambchop` is an Python package to make regular AWS Lambda functions asyncronous by allowing them to run background processes. 
+`lambchop` is an Python package that gives regular AWS Lambda asyncronous functionality by allow them to run background processes. This works by utilizing AWS Lambda [extensions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-extensions.html) which runs in a different process that the main lambda function code.
 
 
 ## Installation
@@ -39,6 +39,8 @@ pip install git+ssh://git@github.com/dave-lanigan/lambchop.git
 pip install git+https://git@github.com/dave-lanigan/lambchop.git
 ```
 
+> 📝 Sudo privileges may be required since the lambda extensions is placed in the `/opt/extensions/` directory.
+
 ## Usage
 
 ```
@@ -52,11 +54,11 @@ def long_running_process(x, y):
     print("Completed.")
 
 
-async def main():
+def main():
     sk = SideKick()
-    await sk.process(long_running_process, x=5, y=3)
+    sk.process(long_running_process, x=5, y=3)
     print("Done sending.")
 
 if __name__ == "__main__":
-    anyio.run(main)
+    main()
 ```
