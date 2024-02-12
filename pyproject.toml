@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lambchop"
 description = "A sidekick to make your AWS Lambda async"
-version = "0.0.12"
+version = "0.0.13"
 authors = [{name = "bohemdev"}]
 readme = "README.md"
 license = {file = "LICENSE"}
