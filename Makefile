@@ -2,7 +2,7 @@ clean:
 	black lambchop && isort lambchop && autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive lambchop
 
 build:
-	python setup.py sdist --formats=gztar,zip
+	python setup.py sdist --formats=gztar
 
 publish:
 	twine upload dist/* --verbose

@@ -1,7 +1,7 @@
 from typing import Any
 
-import anyio
 import dill
+import requests
 
 from .datastructures import Task
 
@@ -9,22 +9,21 @@ from .datastructures import Task
 class Client:
     def __init__(self, port: int = 1956):
         self.port = port
+        self.url = f"http://localhost:{self.port}/"
 
-    def serialize(self, task: Task) -> bytes:
+    def _serialize(self, task: Task) -> bytes:
         """Convert python function and parameters"""
-        return dill.dumps(task)
+        return dill.dumps(task).hex()
 
-    def deserialize(self, result: bytes) -> Any:
+    def _deserialize(self, result: bytes) -> Any:
         return dill.loads(result)
 
-    async def ping(self):
+    def ping(self):
         """Send name to TCP server."""
-        async with await anyio.connect_tcp("localhost", self.port) as client:
-            await client.send(b"PING")
-            return await client.receive()
+        return requests.get(self.url)
 
-    async def send_task(self, task: Task):
+    def send_task(self, task: Task):
         """Send task to TCP server."""
-        bt = self.serialize(task)
-        async with await anyio.connect_tcp("localhost", self.port) as client:
-            await client.send(bt)
+        bt = self._serialize(task)
+        r = requests.post(self.url, json=bt)
+        print(r.json(), flush=True)
