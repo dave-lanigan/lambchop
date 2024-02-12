@@ -11,9 +11,8 @@ readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dependencies = [
-    "anyio",
     "dill",
-    "typer[all]"
+    "requests"
 ]
 
 [project.optional-dependencies]

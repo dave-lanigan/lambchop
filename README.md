@@ -68,19 +68,3 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-
-
-```
-FROM public.ecr.aws/lambda/python:3.11
-
-WORKDIR ${LAMBDA_TASK_ROOT}
-
-COPY ./requirements.txt .
-COPY ./app app/
-
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-
-RUN chmod +x /opt/extensions/lc_ext.py
-
-CMD ["app.main.handler"]
-```
