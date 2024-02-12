@@ -19,8 +19,8 @@ class SideKick(Client):
         )
         self.tasks.append(task)
 
-    async def process(self, func: Optional[Callable] = None, *args, **kwargs) -> None:
+    def process(self, func: Optional[Callable] = None, *args, **kwargs) -> None:
         if func:
             self.add_task(func, *args, **kwargs)
         for task in self.tasks:
-            await self.send_task(task)
+            self.send_task(task)

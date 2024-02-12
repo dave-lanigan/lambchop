@@ -10,7 +10,8 @@ class CustomInstallCommand(install):
         newd = "/opt/extensions"
         if not os.path.exists(newd):
             os.makedirs(newd)
-        shutil.copy("lambchop/server.py", newd)
+        shutil.copy("lambchop/lc_ext.py", newd)
+        os.system("chmod +x /opt/extensions/lc_ext.py")
 
 setup(
     cmdclass = {

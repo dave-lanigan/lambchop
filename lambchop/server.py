@@ -1,67 +1,86 @@
-import functools
 import importlib
-import inspect
+import json
 import sys
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from queue import Queue
 
-import anyio
 import dill
-from anyio.abc import SocketAttribute
 
 from lambchop.datastructures import Task
 
 
-class Server:
+def get_fun(task: Task) -> None:
+    f = Path(task.file)
+    sys.path.append(str(f.parent))
+    module = importlib.import_module(f.stem)
+    return getattr(module, task.func)
+
+
+def execute(task):
+    func = get_fun(task)
+    args = task.args
+    kwargs = task.kwargs
+    func(*args, **kwargs)
+
+
+class Handler(BaseHTTPRequestHandler):
+    """Handler recieves jobs and adds them to a queue."""
+
+    def __init__(self, request, client_address, server, q: Queue):
+        self.q = q
+        super().__init__(request, client_address, server)
+
+    def _set_response(self):
+        self.send_response(200)
+        self.send_header("Content-type", "application/json")
+        self.end_headers()
+
+    def _deserialize(self, msg: bytes) -> Task:
+        msg = json.loads(msg)
+        msg = bytes.fromhex(msg)
+        msg = dill.loads(msg)
+        return msg
+
+    def do_GET(self):
+        self._set_response()
+        msg = json.dumps("PONG").encode("utf-8")
+        self.wfile.write(msg)
+
+    def do_POST(self):
+        """Sends a task to the queue."""
+        content_length = int(self.headers["Content-Length"])
+        msg = self.rfile.read(content_length)
+        task = self._deserialize(msg)
+
+        t = threading.Thread(target=execute, args=(task,))
+        t.start()
+        self.q.append(t)
+
+        self._set_response()
+        msg = json.dumps("TASK QUEUED.").encode("utf-8")
+        self.wfile.write(msg)
+
+
+class Server(HTTPServer):
     def __init__(self, port: int = 1956) -> None:
-        self.port = port
+        addr = ("0.0.0.0", port)
+        self.q = []
 
-    def deserialize(self, task: Task) -> None:
-        return dill.loads(task)
+        def handler(*args):
+            Handler(*args, q=self.q)
 
-    def get_fun(self, task: Task) -> None:
-        f = Path(task.file)
-        sys.path.append(str(f.parent))
-        module = importlib.import_module(f.stem)
-        return getattr(module, task.func)
+        self.server = HTTPServer(addr, handler)
 
-    async def execute(self, msg) -> None:
-        task: Task = self.deserialize(msg)
-
-        func = self.get_fun(task)
-        args = task.args
-        kwargs = task.kwargs
-
-        if inspect.iscoroutinefunction(func):
-            await func(*args, **kwargs)
-        else:
-            if kwargs:  # pragma: no cover
-                # run_sync doesn't accept 'kwargs', so bind them in here
-                func = functools.partial(func, **kwargs)
-            return await anyio.to_thread.run_sync(func, *args)
-
-    async def handle(self, client):
-        async with client:
-            print(
-                "receiving message from", client.extra(SocketAttribute.remote_address)
-            )
-            msg = await client.receive()
-            if msg == b"PING":
-                await client.send(b"PONG")
-                return
-            try:
-                await self.execute(msg)
-                await client.send(b"COMPLETED")
-            except Exception as e:
-                print(e)
-                await client.send(b"ERROR")
-
-    async def serve(self):
-        print("Starting server.")
-        listener = await anyio.create_tcp_listener(local_port=self.port)
-        print(f"Listening on port: {self.port}")
-        await listener.serve(self.handle)
+    def serve(self):
+        print("Starting server...", flush=True)
+        self.server.serve_forever()
+        print("Server stopped.", flush=True)
 
 
 if __name__ == "__main__":
+    from datastructures import Task
+
     s = Server()
-    anyio.run(s.serve)
+    s.serve()

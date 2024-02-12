@@ -1,17 +1,23 @@
-import anyio
 import time
 from lambchop import SideKick
 
 def long_running_process(x, y):
-    print("Starting process.")
+    print("Starting process 1.")
     time.sleep(x + y)
     print("Completed.")
 
 
-async def main():
+def long_running_process2(x, y):
+    print("Starting process 2.")
+    time.sleep(x + y)
+    print("Completed.")
+
+
+def main():
     sk = SideKick()
-    await sk.process(long_running_process, x=5, y=3)
-    print("Done sending.")
+    sk.add_task(long_running_process, x=5, y=3)
+    sk.add_task(long_running_process2, x=5, y=3)
+    sk.process()
 
 if __name__ == "__main__":
-    anyio.run(main)
+    main()
